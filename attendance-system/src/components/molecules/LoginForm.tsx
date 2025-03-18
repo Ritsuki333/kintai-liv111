@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { loginSchema } from "../../utils/validation";
+import { useNavigate } from "react-router-dom";
 import { login } from "../../services/api";
+import { loginSchema } from "../../utils/validation";
 import Input from "../atoms/Input";
 import Button from "../atoms/Button";
 import Label from "../atoms/Label";
@@ -20,6 +21,9 @@ const ErrorMessage = styled.p`
 `;
 
 const LoginForm: React.FC = () => {
+  const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
@@ -29,14 +33,12 @@ const LoginForm: React.FC = () => {
     mode: "onChange",
   });
 
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
   const onSubmit = async (data: LoginFormInputs) => {
-    setErrorMessage(null); // エラーをリセット
+    setErrorMessage(null);
     try {
       const response = await login(data.email, data.password);
-      console.log("ログイン成功:", response);
-      // ここでログイン後の処理を追加（例: トークン保存、ページ遷移）
+      localStorage.setItem("token", response.token); // 🔹トークンを保存
+      navigate("/dashboard"); // 🔹ログイン成功時にダッシュボードへ移動
     } catch (error) {
       setErrorMessage("メールアドレスまたはパスワードが正しくありません");
     }
