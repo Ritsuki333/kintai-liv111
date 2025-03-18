@@ -3,9 +3,11 @@ import styled from "styled-components";
 
 type InputProps = {
   type: "text" | "password";
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  value?: string; // 🔹オプショナルに変更
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; // 🔹オプショナルに変更
   placeholder?: string;
+  name?: string; // 🔹react-hook-form 用に追加
+  ref?: React.Ref<HTMLInputElement>; // 🔹react-hook-form 用に追加
 };
 
 const StyledInput = styled.input`
@@ -16,8 +18,8 @@ const StyledInput = styled.input`
   font-size: 16px;
 `;
 
-const Input: React.FC<InputProps> = ({ type, value, onChange, placeholder }) => {
-  return <StyledInput type={type} value={value} onChange={onChange} placeholder={placeholder} />;
+const Input: React.FC<InputProps> = (props) => {
+  return <StyledInput {...props} />;
 };
 
 export default Input;
