@@ -1,15 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "../../utils/validation";
+import { login } from "../../services/api";
 import Input from "../atoms/Input";
 import Button from "../atoms/Button";
 import Label from "../atoms/Label";
 import styled from "styled-components";
-
-type LoginFormProps = {
-  onLogin: (email: string, password: string) => void;
-};
 
 type LoginFormInputs = {
   email: string;
@@ -22,7 +19,7 @@ const ErrorMessage = styled.p`
   margin: 5px 0;
 `;
 
-const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
+const LoginForm: React.FC = () => {
   const {
     register,
     handleSubmit,
@@ -32,8 +29,17 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
     mode: "onChange",
   });
 
-  const onSubmit = (data: LoginFormInputs) => {
-    onLogin(data.email, data.password);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const onSubmit = async (data: LoginFormInputs) => {
+    setErrorMessage(null); // エラーをリセット
+    try {
+      const response = await login(data.email, data.password);
+      console.log("ログイン成功:", response);
+      // ここでログイン後の処理を追加（例: トークン保存、ページ遷移）
+    } catch (error) {
+      setErrorMessage("メールアドレスまたはパスワードが正しくありません");
+    }
   };
 
   return (
@@ -45,6 +51,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
       <Label text="パスワード" />
       <Input type="password" {...register("password")} />
       {errors.password && <ErrorMessage>{errors.password.message}</ErrorMessage>}
+
+      {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
 
       <Button text="ログイン" onClick={handleSubmit(onSubmit)} disabled={!isValid} />
     </form>
