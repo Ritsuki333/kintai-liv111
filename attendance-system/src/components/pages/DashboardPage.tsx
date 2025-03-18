@@ -1,12 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login"); // 🔹 トークンが無い場合はログインページへ
+    }
+  }, [navigate]);
+
   const handleLogout = () => {
     localStorage.removeItem("token"); // 🔹ログアウト時にトークンを削除
-    navigate("/"); // 🔹ログアウト後にログインページへ移動
+    navigate("/login"); // 🔹ログアウト後にログインページへ移動
   };
 
   return (

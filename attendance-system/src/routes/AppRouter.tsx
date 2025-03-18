@@ -1,16 +1,18 @@
-import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "../components/pages/LoginPage";
-import DashboardPage from "../components/pages/DashboardPage";
+import RegisterPage from "../components/pages/RegisterPage";
+import DashboardPage from "../components/pages/DashboardPage"; // ✅ 追加
 
-
-const AppRouter: React.FC = () => {
+const AppRouter = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="*" element={<Navigate to="/" />} />
+        {/* ✅ デフォルトはログインページに */}
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/dashboard" element={<DashboardPage />} /> {/* ✅ 追加 */}
+        <Route path="*" element={<h1>404 Not Found</h1>} />
       </Routes>
     </Router>
   );
