@@ -1,9 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-type Props = {
+interface Props {
   onLogout: () => void;
-};
+}
 
 const UserTopNav: React.FC<Props> = ({ onLogout }) => {
   const navigate = useNavigate();
