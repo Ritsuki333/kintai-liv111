@@ -1,20 +1,38 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import UserTopNav from "../organisms/UserTopNav";
+import { getMe } from "../../services/api";
+import UserTopNav from "../../components/organisms/UserTopNav";
+import MainTemplate from "../../components/templates/MainTemplate";
 
 const UserTopPage: React.FC = () => {
   const navigate = useNavigate();
-  const handleLogout = () => {
-    localStorage.removeItem("token"); // 🔹 トークン削除
-    navigate("/login"); // 🔹 ログインページへ遷移
-  };
+  const [user, setUser] = useState<{ name: string } | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+      try {
+        const userData = await getMe(token);
+        setUser(userData);
+      } catch (error) {
+        console.error("ユーザー情報取得エラー:", error);
+        navigate("/login");
+      }
+    };
+
+    fetchUser();
+  }, [navigate]);
 
   return (
-    <div>
-      <h1>勤怠管理システム</h1>
-      <h2>TOPページ</h2>
-      <UserTopNav onLogout={handleLogout} />
-    </div>
+    <MainTemplate>
+      <h1>ダッシュボード</h1> {/* ✅ 表示名を統一 */}
+      {user && <p>ようこそ、{user.name}さん！</p>}
+      <UserTopNav />
+    </MainTemplate>
   );
 };
 
