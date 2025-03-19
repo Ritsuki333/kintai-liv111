@@ -1,17 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/auth"; // バックエンドのURL
-
-// ✅ ユーザー登録（追加）
-export const register = async (name: string, email: string, password: string) => {
-    try {
-        const response = await axios.post(`${API_URL}/register`, { name, email, password });
-        return response.data;
-    } catch (error: any) {
-        console.error("登録エラー:", error);
-        throw error.response?.data || { message: "登録エラー" };
-    }
-};
+const API_URL = "http://localhost:5000/api/auth";
 
 // ✅ ユーザーログイン
 export const login = async (email: string, password: string) => {
@@ -24,7 +13,7 @@ export const login = async (email: string, password: string) => {
     }
 };
 
-// ✅ 認証済みユーザー情報取得
+// ✅ 認証済みユーザー情報取得 (エラーハンドリング強化)
 export const getMe = async (token: string) => {
     try {
         const response = await axios.get(`${API_URL}/me`, {

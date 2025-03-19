@@ -1,15 +1,18 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import "../../styles/dashboard.css"; // ✅ スタイル適用
+import { useNavigate } from "react-router-dom";
 
 const DashboardNav: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
   return (
-    <nav className="dashboard-nav">
-      <ul>
-        <li><Link to="/dashboard">ホーム</Link></li>
-        <li><Link to="/profile">プロフィール</Link></li>
-        <li><Link to="/settings">設定</Link></li>
-      </ul>
+    <nav style={{ background: "#333", padding: "10px", color: "#fff" }}>
+      <h2>ダッシュボード</h2>
+      <button onClick={handleLogout} style={{ marginLeft: "20px" }}>ログアウト</button>
     </nav>
   );
 };
