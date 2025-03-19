@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getMe } from "../../services/api";
+import DashboardNav from "../../components/organisms/DashboardNav"; 
 
 const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
@@ -13,29 +14,27 @@ const DashboardPage: React.FC = () => {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
-          navigate("/login"); // ✅ 未認証ならログインページへ
+          navigate("/login"); 
           return;
         }
         const userData = await getMe(token);
-        if (!user) { // ✅ ユーザー情報が取得済みなら再取得しない
-          setUser(userData);
-        }
+        
+        if (!userData) return; // ✅ 無限ループ防止
+        
+        setUser(userData);
       } catch (err) {
         setError("ユーザー情報の取得に失敗しました");
-        localStorage.removeItem("token");
-        navigate("/login");
+        console.error(err);
       } finally {
         setLoading(false);
       }
     };
 
-    if (!user) { // ✅ 初回のみ実行
-      fetchUser();
-    }
-  }, [user]); // ✅ `user` を依存配列に追加して、無限ループを防ぐ
+    fetchUser();
+  }, []); // ✅ 依存配列を空にして無限ループを防ぐ
 
   const handleLogout = () => {
-    localStorage.removeItem("token"); // ✅ ログアウト時にトークン削除
+    localStorage.removeItem("token");
     navigate("/login");
   };
 
@@ -43,15 +42,18 @@ const DashboardPage: React.FC = () => {
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   return (
-    <div>
-      <h1>ダッシュボード</h1>
-      {user && (
-        <>
-          <p>ようこそ、{user.name}さん！</p>
-          <p>メール: {user.email}</p>
-        </>
-      )}
-      <button onClick={handleLogout}>ログアウト</button>
+    <div className="dashboard-container">
+      <DashboardNav /> 
+      <div className="dashboard-content">
+        <h1>ダッシュボード</h1>
+        {user && (
+          <>
+            <p>ようこそ、{user.name}さん！</p>
+            <p>メール: {user.email}</p>
+          </>
+        )}
+        <button onClick={handleLogout} className="logout-btn">ログアウト</button>
+      </div>
     </div>
   );
 };
