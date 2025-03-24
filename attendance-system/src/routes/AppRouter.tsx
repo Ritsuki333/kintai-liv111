@@ -1,14 +1,23 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import LoginPage from "../components/pages/LoginPage"; // ✅ パス修正
-import UserTopPage from "../components/pages/UserTopPage"; // ✅ パス修正
+
+import LoginPage from "../components/pages/LoginPage";
+import RegisterPage from "../components/pages/RegisterPage";
+import DashboardPage from "../components/pages/DashboardPage"; // ✅ 追加
+import UserTopPage from "../components/pages/UserTopPage";
+import AttendancePage from "../components/pages/AttendancePage";
+import AttendanceInfoPage from "../components/pages/AttendanceInfoPage";
 
 const AppRouter: React.FC = () => {
   return (
     <Router>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/dashboard" element={<UserTopPage />} />  {/* ✅ /dashboard に修正 */}
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/dashboard" element={<DashboardPage />} /> {/* ✅ 追加 */}
+        <Route path="/top" element={<UserTopPage />} />
+        <Route path="/attendance" element={<AttendancePage />} />
+        <Route path="/attendance-info" element={<AttendanceInfoPage />} />
         <Route path="*" element={<h1>404 Not Found</h1>} />
       </Routes>
     </Router>
